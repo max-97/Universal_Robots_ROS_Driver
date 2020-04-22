@@ -22,3 +22,6 @@ tool_output_current
 tool_temperature
 robot_mode
 safety_mode
+joint_temperatures
+target_q
+target_TCP_pose
