@@ -15,6 +15,7 @@ find_package(catkin REQUIRED
     controller_manager
     geometry_msgs
     hardware_interface
+    industrial_robot_status_interface
     pluginlib
     roscpp
     sensor_msgs
@@ -35,6 +36,7 @@ catkin_package(
     include
   LIBRARIES
     ur_robot_driver
+    ur_robot_driver_plugin
   CATKIN_DEPENDS
     actionlib
     control_msgs
@@ -90,6 +92,7 @@ add_library(ur_robot_driver
     #src/ur/robot_mode.cpp
     src/primary/primary_package.cpp
     src/primary/robot_message.cpp
+    src/primary/robot_state.cpp
     src/primary/robot_message/version_message.cpp
     src/primary/robot_state/kinematics_info.cpp
     src/rtde/control_package_pause.cpp
@@ -142,7 +145,19 @@ add_executable(robot_state_helper
 target_link_libraries(robot_state_helper ${catkin_LIBRARIES} ur_robot_driver)
 add_dependencies(robot_state_helper ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-install(TARGETS ur_robot_driver ur_robot_driver_node robot_state_helper dashboard_client
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+
+  add_rostest(test/driver.test)
+
+  catkin_add_gtest(test_rtde_client
+    test/test_rtde_client.cpp
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
+  target_link_libraries(test_rtde_client ${catkin_LIBRARIES} ur_robot_driver)
+endif()
+
+
+install(TARGETS ur_robot_driver ur_robot_driver_plugin ur_robot_driver_node robot_state_helper dashboard_client
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -151,7 +166,7 @@ install(TARGETS ur_robot_driver ur_robot_driver_node robot_state_helper dashboar
 install(PROGRAMS scripts/tool_communication
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-install(DIRECTORY config launch
+install(DIRECTORY config launch resources
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 

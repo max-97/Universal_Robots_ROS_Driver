@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------
 
 #include "ur_robot_driver/primary/primary_package.h"
+#include "ur_robot_driver/primary/abstract_primary_consumer.h"
 
 namespace ur_driver
 {

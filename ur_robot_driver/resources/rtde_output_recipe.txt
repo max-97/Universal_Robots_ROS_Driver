@@ -25,3 +25,6 @@ safety_mode
 joint_temperatures
 target_q
 target_TCP_pose
+robot_status_bits
+safety_status_bits
+actual_current
